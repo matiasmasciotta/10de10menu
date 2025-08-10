@@ -1,101 +1,65 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import initialMenu from './menu.model.json';
 
-const menuData = ref({
-  entradas: {
-    title: 'ENTRADAS',
-    icon: '🍟',
-    items: [
-      { name: 'Bastones de Mozzarella', price: '5.600' },
-      { name: 'Tequeños de queso', price: '5.200' },
-      { name: 'Papas fritas solas', price: '4.800' },
-      { name: 'Papas fritas con cheddar & Panceta', price: '6.500' },
-      { name: 'Papas fritas 10de10', price: '7.000', description: '(Cheddar,Panceta,salchichas alemanas)' },
-    ]
-  },
-  infantil: {
-    title: 'MENÚ INFANTIL',
-    items: [
-      { name: 'Nuggets de pollo crispy con papas', price: '6.200' },
-      { name: 'Milanesa con puré', price: '6.500' },
-      { name: 'Salchipapas', price: '5.800' },
-      { name: 'Pasta con salsa rosa', price: '6.000' },
-    ]
-  },
-  parrilla: {
-    title: 'PARRILLA',
-    icon: '🔥',
-    items: [
-      { name: 'Chorizo', price: '3.500' },
-      { name: 'Morcilla', price: '3.500' },
-      { name: 'Provoleta', price: '5.800' },
-      { name: 'Asado', price: '9.000' },
-      { name: 'Bondiola', price: '8.500' },
-      { name: 'Pechuga de pollo', price: '7.500' },
-      { name: 'Pata Muslo', price: '7.000' },
-    ]
-  },
-  hamburguesas: {
-    title: 'HAMBURGUESAS',
-    icon: '🍔',
-    items: [
-      { name: 'Pappo Napolitano', price: '7.800', options: 'Simple/Doble/Triple' },
-      { name: 'La Escaloneta', price: '8.200', options: 'Simple/Doble/Triple' },
-      { name: 'D10S', price: '8.500', options: 'Simple/Doble/Triple' },
-      { name: 'Messirve', price: '8.000', options: 'Simple/Doble/Triple' },
-      { name: '10de10', price: '9.500', options: 'Simple/Doble/Triple' },
-    ],
-    optional: '*Opcional Medallón: Carne/Pollo Crispy/ VEGGIE'
-  },
-  bebidas: {
-      title: 'BEBIDAS SIN ALCOHOL',
-      icon: '🥤',
-      items: [
-          { name: 'Agua mineral', price: '1.500' },
-          { name: 'Agua saborizada', price: '1.800' },
-          { name: 'Limonada', price: '2.500' },
-          { name: 'Gaseosa', price: '2.000' },
-      ]
-  },
-  vinos: {
-      title: 'VINOS/TRAGOS',
-      icon: '🍷',
-      items: [
-        { name: 'Vino Cosecha tardía', price: '4.500' },
-        { name: 'Vino Malbec', price: '4.800' },
-        { name: 'Fernet', price: '3.800' },
-        { name: 'Campari', price: '4.200' },
-        { name: 'Gin Tonic', price: '5.000' },
-      ]
-  },
-  cervezas: {
-    title: 'CERVEZAS',
-    icon: '🍺',
-    items: [
-      { name: 'IPA', price: '2.800' },
-      { name: 'BLONDE ALE', price: '2.500' },
-      { name: 'PORTER', price: '2.700' },
-      { name: 'HONEY', price: '2.600' },
-      { name: '10de10', price: '3.000' },
-    ]
-  },
-  postres: {
-    title: 'POSTRES',
-    icon: '🍰',
-    items: [
-      { name: 'FLAN', price: '3.200' },
-      { name: 'HELADO', price: '3.000' },
-      { name: 'BROWNIE', price: '4.000' },
-      { name: 'ICE POPS', price: '2.500' },
-    ]
-  }
+// Hacemos reactiva la data del menú
+const menuItems = ref(initialMenu);
+
+// Usamos la API de HMR de Vite para escuchar cambios en el JSON
+if (import.meta.hot) {
+  import.meta.hot.accept('./menu.model.json', (newMenu) => {
+    // Cuando el archivo cambia, actualizamos nuestra variable reactiva
+    menuItems.value = newMenu.default;
+  });
+}
+
+// Agrupa los items del JSON por categoría
+const menuSections = computed(() => {
+  const sections = {};
+  menuItems.value.forEach(item => {
+    if (!sections[item.category]) {
+      sections[item.category] = {
+        title: item.category,
+        icon: item.icon,
+        items: []
+      };
+    }
+    sections[item.category].items.push({
+      name: item.name,
+      description: item.description,
+      price: item.price
+    });
+  });
+  return sections;
 });
 
-const columns = ref([
-  [menuData.value.entradas, menuData.value.infantil],
-  [menuData.value.parrilla, menuData.value.hamburguesas, menuData.value.bebidas],
-  [menuData.value.cervezas, menuData.value.vinos, menuData.value.postres]
-]);
+// Define la estructura de las columnas usando las secciones agrupadas
+const columns = computed(() => {
+    const sections = menuSections.value;
+    // Filtramos para evitar errores si una categoría no existe temporalmente
+    const allSections = [
+        sections['ENTRADAS'], 
+        sections['MENÚ INFANTIL'],
+        sections['PARRILLA'], 
+        sections['HAMBURGUESAS'], 
+        sections['BEBIDAS SIN ALCOHOL'],
+        sections['CERVEZAS'], 
+        sections['VINOS/TRAGOS'], 
+        sections['POSTRES']
+    ].filter(Boolean);
+
+    // Re-distribuimos las secciones existentes en las columnas
+    return [
+        allSections.slice(0, 2),
+        allSections.slice(2, 5),
+        allSections.slice(5, 8)
+    ];
+});
+
+// Función para formatear el precio
+const formatPrice = (price) => {
+  return new Intl.NumberFormat('es-AR', { minimumFractionDigits: 0 }).format(price);
+};
 
 </script>
 
@@ -131,15 +95,14 @@ const columns = ref([
             <!-- Items de la sección -->
             <div class="space-y-4 mt-4">
               <div v-for="item in section.items" :key="item.name">
-                <!-- Caso 1: Item con precio (y posiblemente opciones) -->
+                                <!-- Caso 1: Item con precio (y posiblemente opciones) -->
                 <div v-if="item.price" class="menu-item">
                   <div class="flex-shrink-0">
                     <h3 class="text-xl">{{ item.name }}</h3>
                     <p v-if="item.description" class="text-sm text-gray-400">{{ item.description }}</p>
-                    <p v-if="item.options" class="text-base text-gray-300">{{ item.options }}</p>
                   </div>
                   <span class="dots"></span>
-                  <span class="menu-item-price">${{ item.price }}</span>
+                  <span class="menu-item-price">${{ formatPrice(item.price) }}</span>
                 </div>
 
                 <!-- Caso 2: Item sin precio (solo nombre/descripción) -->

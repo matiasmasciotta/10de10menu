@@ -1,0 +1,314 @@
+[
+  {
+    "id": 1,
+    "category": "ENTRADAS",
+    "icon": "🍟",
+    "name": "Bastones de Mozzarella",
+    "description": "",
+    "price": 5600
+  },
+  {
+    "id": 1,
+    "category": "ENTRADAS",
+    "icon": "🍟",
+    "name": "Tequeños de queso",
+    "description": "",
+    "price": 5200
+  },
+  {
+    "id": 1,
+    "category": "ENTRADAS",
+    "icon": "🍟",
+    "name": "Papas fritas solas",
+    "description": "",
+    "price": 4800
+  },
+  {
+    "id": 1,
+    "category": "ENTRADAS",
+    "icon": "🍟",
+    "name": "Papas fritas con cheddar & Panceta",
+    "description": "",
+    "price": 6500
+  },
+  {
+    "id": 1,
+    "category": "ENTRADAS",
+    "icon": "🍟",
+    "name": "Papas fritas 10de10",
+    "description": "(Cheddar,Panceta,salchichas alemanas)",
+    "price": 7000
+  },
+  {
+    "id": 2,
+    "category": "MENÚ INFANTIL",
+    "icon": "",
+    "name": "Nuggets de pollo crispy con papas",
+    "description": "",
+    "price": 6200
+  },
+  {
+    "id": 2,
+    "category": "MENÚ INFANTIL",
+    "icon": "",
+    "name": "Milanesa con puré",
+    "description": "",
+    "price": 6500
+  },
+  {
+    "id": 2,
+    "category": "MENÚ INFANTIL",
+    "icon": "",
+    "name": "Salchipapas",
+    "description": "",
+    "price": 5800
+  },
+  {
+    "id": 2,
+    "category": "MENÚ INFANTIL",
+    "icon": "",
+    "name": "Pasta con salsa rosa",
+    "description": "",
+    "price": 6000
+  },
+  {
+    "id": 3,
+    "category": "PARRILLA",
+    "icon": "🔥",
+    "name": "Chorizo",
+    "description": "",
+    "price": 3500
+  },
+  {
+    "id": 3,
+    "category": "PARRILLA",
+    "icon": "🔥",
+    "name": "Morcilla",
+    "description": "",
+    "price": 3500
+  },
+  {
+    "id": 3,
+    "category": "PARRILLA",
+    "icon": "🔥",
+    "name": "Provoleta",
+    "description": "",
+    "price": 5800
+  },
+  {
+    "id": 3,
+    "category": "PARRILLA",
+    "icon": "🔥",
+    "name": "Asado",
+    "description": "",
+    "price": 9000
+  },
+  {
+    "id": 3,
+    "category": "PARRILLA",
+    "icon": "🔥",
+    "name": "Bondiola",
+    "description": "",
+    "price": 8500
+  },
+  {
+    "id": 3,
+    "category": "PARRILLA",
+    "icon": "🔥",
+    "name": "Pechuga de pollo",
+    "description": "",
+    "price": 7500
+  },
+  {
+    "id": 3,
+    "category": "PARRILLA",
+    "icon": "🔥",
+    "name": "Pata Muslo",
+    "description": "",
+    "price": 7000
+  },
+  {
+    "id": 4,
+    "category": "HAMBURGUESAS",
+    "icon": "🍔",
+    "name": "Pappo Napolitano",
+    "description": "Simple/Doble/Triple",
+    "price": 7800
+  },
+  {
+    "id": 4,
+    "category": "HAMBURGUESAS",
+    "icon": "🍔",
+    "name": "La Escaloneta",
+    "description": "Simple/Doble/Triple",
+    "price": 8200
+  },
+  {
+    "id": 4,
+    "category": "HAMBURGUESAS",
+    "icon": "🍔",
+    "name": "D10S",
+    "description": "Simple/Doble/Triple",
+    "price": 8500
+  },
+  {
+    "id": 4,
+    "category": "HAMBURGUESAS",
+    "icon": "🍔",
+    "name": "Messirve",
+    "description": "Simple/Doble/Triple",
+    "price": 8000
+  },
+  {
+    "id": 4,
+    "category": "HAMBURGUESAS",
+    "icon": "🍔",
+    "name": "10de10",
+    "description": "Simple/Doble/Triple",
+    "price": 9500
+  },
+  {
+    "id": 5,
+    "category": "BEBIDAS SIN ALCOHOL",
+    "icon": "🥤",
+    "name": "Agua mineral",
+    "description": "",
+    "price": 1500
+  },
+  {
+    "id": 5,
+    "category": "BEBIDAS SIN ALCOHOL",
+    "icon": "🥤",
+    "name": "Agua saborizada",
+    "description": "",
+    "price": 1800
+  },
+  {
+    "id": 5,
+    "category": "BEBIDAS SIN ALCOHOL",
+    "icon": "🥤",
+    "name": "Limonada",
+    "description": "",
+    "price": 2500
+  },
+  {
+    "id": 5,
+    "category": "BEBIDAS SIN ALCOHOL",
+    "icon": "🥤",
+    "name": "Gaseosa",
+    "description": "",
+    "price": 2000
+  },
+  {
+    "id": 6,
+    "category": "VINOS/TRAGOS",
+    "icon": "🍷",
+    "name": "Vino Cosecha tardía",
+    "description": "",
+    "price": 4500
+  },
+  {
+    "id": 6,
+    "category": "VINOS/TRAGOS",
+    "icon": "🍷",
+    "name": "Vino Malbec",
+    "description": "",
+    "price": 4800
+  },
+  {
+    "id": 6,
+    "category": "VINOS/TRAGOS",
+    "icon": "🍷",
+    "name": "Fernet",
+    "description": "",
+    "price": 3800
+  },
+  {
+    "id": 6,
+    "category": "VINOS/TRAGOS",
+    "icon": "🍷",
+    "name": "Campari",
+    "description": "",
+    "price": 4200
+  },
+  {
+    "id": 6,
+    "category": "VINOS/TRAGOS",
+    "icon": "🍷",
+    "name": "Gin Tonic",
+    "description": "",
+    "price": 5000
+  },
+  {
+    "id": 7,
+    "category": "CERVEZAS",
+    "icon": "🍺",
+    "name": "IPA",
+    "description": "",
+    "price": 2800
+  },
+  {
+    "id": 7,
+    "category": "CERVEZAS",
+    "icon": "🍺",
+    "name": "BLONDE ALE",
+    "description": "",
+    "price": 2500
+  },
+  {
+    "id": 7,
+    "category": "CERVEZAS",
+    "icon": "🍺",
+    "name": "PORTER",
+    "description": "",
+    "price": 2700
+  },
+  {
+    "id": 7,
+    "category": "CERVEZAS",
+    "icon": "🍺",
+    "name": "HONEY",
+    "description": "",
+    "price": 2600
+  },
+  {
+    "id": 7,
+    "category": "CERVEZAS",
+    "icon": "🍺",
+    "name": "10de10",
+    "description": "",
+    "price": 3000
+  },
+  {
+    "id": 8,
+    "category": "POSTRES",
+    "icon": "🍰",
+    "name": "FLAN",
+    "description": "",
+    "price": 3200
+  },
+  {
+    "id": 8,
+    "category": "POSTRES",
+    "icon": "🍰",
+    "name": "HELADO",
+    "description": "",
+    "price": 3000
+  },
+  {
+    "id": 8,
+    "category": "POSTRES",
+    "icon": "🍰",
+    "name": "BROWNIE",
+    "description": "",
+    "price": 4000
+  },
+  {
+    "id": 8,
+    "category": "POSTRES",
+    "icon": "🍰",
+    "name": "ICE POPS",
+    "description": "",
+    "price": 2500
+  }
+]
