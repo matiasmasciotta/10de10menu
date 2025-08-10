@@ -1,19 +1,41 @@
 <script setup>
-import { ref, computed } from 'vue';
-import initialMenu from './menu.model.json';
+import { ref, computed, onMounted } from 'vue';
+import Papa from 'papaparse';
 
-// Hacemos reactiva la data del menú
-const menuItems = ref(initialMenu);
+// URL del Google Sheet publicado como CSV
+const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSzERRdV7V1KNNuAznk70gSInUUV-0mNSfoVDnmKbp-9wHY0SJUdG5NixiJ5y7CZTxImfHKPWo-0qwx/pub?gid=0&single=true&output=csv';
 
-// Usamos la API de HMR de Vite para escuchar cambios en el JSON
-if (import.meta.hot) {
-  import.meta.hot.accept('./menu.model.json', (newMenu) => {
-    // Cuando el archivo cambia, actualizamos nuestra variable reactiva
-    menuItems.value = newMenu.default;
+// Estados para manejar la carga y errores
+const menuItems = ref([]);
+const isLoading = ref(true);
+const error = ref(null);
+
+// Hook que se ejecuta cuando el componente se monta
+onMounted(() => {
+  Papa.parse(GOOGLE_SHEET_URL, {
+    download: true, // Descarga el archivo de la URL
+    header: true,   // Usa la primera fila como cabeceras
+    dynamicTyping: true, // Convierte números y booleanos automáticamente
+    complete: (results) => {
+      // Mapeamos los datos del CSV a la estructura que necesita nuestro componente
+      menuItems.value = results.data.map(item => ({
+        category: item.TITULO,
+        icon: item.ICONO,
+        name: item.PRODUCTO,
+        description: item.SUBTITULO,
+        price: item.PRECIO
+      })).filter(item => item.category && item.name); // Filtramos filas vacías
+      isLoading.value = false;
+    },
+    error: (err) => {
+      console.error('Error al cargar o procesar el menú:', err);
+      error.value = 'No se pudo cargar el menú. Intente de nuevo más tarde.';
+      isLoading.value = false;
+    }
   });
-}
+});
 
-// Agrupa los items del JSON por categoría
+// Agrupa los items por categoría
 const menuSections = computed(() => {
   const sections = {};
   menuItems.value.forEach(item => {
@@ -24,79 +46,71 @@ const menuSections = computed(() => {
         items: []
       };
     }
-    sections[item.category].items.push({
-      name: item.name,
-      description: item.description,
-      price: item.price
-    });
+    sections[item.category].items.push(item);
   });
   return sections;
 });
 
-// Define la estructura de las columnas usando las secciones agrupadas
+// Define la estructura de las columnas
 const columns = computed(() => {
     const sections = menuSections.value;
-    // Filtramos para evitar errores si una categoría no existe temporalmente
-    const allSections = [
-        sections['ENTRADAS'], 
-        sections['MENÚ INFANTIL'],
-        sections['PARRILLA'], 
-        sections['HAMBURGUESAS'], 
-        sections['BEBIDAS SIN ALCOHOL'],
-        sections['CERVEZAS'], 
-        sections['VINOS/TRAGOS'], 
-        sections['POSTRES']
-    ].filter(Boolean);
+    const orderedSections = [
+      'ENTRADAS', 'MENÚ INFANTIL', 'PARRILLA', 'HAMBURGUESAS', 
+      'BEBIDAS SIN ALCOHOL', 'CERVEZAS', 'VINOS/TRAGOS', 'POSTRES'
+    ]
+    .map(title => sections[title])
+    .filter(Boolean);
 
-    // Re-distribuimos las secciones existentes en las columnas
     return [
-        allSections.slice(0, 2),
-        allSections.slice(2, 5),
-        allSections.slice(5, 8)
+      orderedSections.slice(0, 2),
+      orderedSections.slice(2, 5),
+      orderedSections.slice(5, 8)
     ];
 });
 
 // Función para formatear el precio
 const formatPrice = (price) => {
+  if (price === null || price === undefined) return '';
   return new Intl.NumberFormat('es-AR', { minimumFractionDigits: 0 }).format(price);
 };
 
 </script>
 
 <template>
-  <div class="bg-brand-dark min-h-screen text-white p-4 md:p-8 font-sans bg-cover bg-center" style="background-image: url('https://www.transparenttextures.com/patterns/black-marble.png');">
-    <div class="max-w-7xl mx-auto">
-      
-      <header class="text-center mb-12">
-        <h1 class="font-bebas text-8xl text-brand-yellow tracking-widest">MENU</h1>
-      </header>
+  <div class="bg-brand-dark text-white min-h-screen font-sans">
+    <header class="text-center py-8 bg-black bg-opacity-50">
+      <h1 class="font-bebas text-7xl md:text-8xl text-brand-yellow tracking-wider">10 DE 10</h1>
+      <p class="text-xl md:text-2xl text-gray-300">Bar & Grill</p>
+    </header>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10">
+    <main class="container mx-auto px-4 py-8">
+      <!-- Estado de Carga -->
+      <div v-if="isLoading" class="text-center text-2xl text-gray-400">
+        Cargando menú...
+      </div>
 
-        <!-- Genera cada columna dinámicamente -->
-        <div v-for="(col, colIndex) in columns" :key="colIndex" class="space-y-8">
-          
-          <!-- Logo en la primera columna -->
-          <div v-if="colIndex === 0">
-            <h2 class="font-bebas text-7xl text-brand-yellow tracking-widest">10de10</h2>
-          </div>
+      <!-- Estado de Error -->
+      <div v-else-if="error" class="text-center text-2xl text-red-500">
+        {{ error }}
+      </div>
 
-          <!-- Itera sobre las secciones de cada columna -->
-          <section v-for="section in col" :key="section.title">
-            <!-- Título de la sección -->
-            <div v-if="section.title === 'MENÚ INFANTIL'" class="bg-brand-yellow p-4 text-brand-dark">
-                <h2 class="font-bebas text-5xl tracking-wide">{{ section.title }}</h2>
+      <!-- Contenido del Menú -->
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-8">
+        <!-- Columnas del menú -->
+        <div v-for="(column, colIndex) in columns" :key="colIndex" class="space-y-8">
+          <!-- Secciones del menú -->
+          <div v-for="section in column" :key="section.title">
+            <div :class="['section-title-wrapper', { 'bg-yellow-400 text-black rounded-lg p-2': section.title === 'MENÚ INFANTIL' }]">
+              <h2 class="font-bebas text-5xl tracking-wide flex items-center">
+                <span v-if="section.icon && section.title !== 'MENÚ INFANTIL'" class="mr-4">{{ section.icon }}</span>
+                {{ section.title }}
+              </h2>
             </div>
-            <div v-else class="font-bebas text-5xl text-brand-yellow tracking-wide flex items-center gap-4">
-              <span>{{ section.title }}</span>
-              <span v-if="section.icon">{{ section.icon }}</span>
-            </div>
-
+            
             <!-- Items de la sección -->
             <div class="space-y-4 mt-4">
               <div v-for="item in section.items" :key="item.name">
-                                <!-- Caso 1: Item con precio (y posiblemente opciones) -->
-                <div v-if="item.price" class="menu-item">
+                <div v-if="item.price !== null && item.price !== undefined" class="menu-item">
                   <div class="flex-shrink-0">
                     <h3 class="text-xl">{{ item.name }}</h3>
                     <p v-if="item.description" class="text-sm text-gray-400">{{ item.description }}</p>
@@ -105,42 +119,52 @@ const formatPrice = (price) => {
                   <span class="menu-item-price">${{ formatPrice(item.price) }}</span>
                 </div>
 
-                <!-- Caso 2: Item sin precio (solo nombre/descripción) -->
-                <div v-else>
-                  <h3 class="text-xl">{{ item.name }}</h3>
-                  <p v-if="item.description" class="text-sm text-gray-400">{{ item.description }}</p>
-                </div>
-
-                <!-- Caso 3: Item simple sin precio -->
-                <div v-else>
+                <div v-else class="menu-item-no-price">
                   <h3 class="text-xl">{{ item.name }}</h3>
                   <p v-if="item.description" class="text-sm text-gray-400">{{ item.description }}</p>
                 </div>
               </div>
-              <p v-if="section.optional" class="text-sm text-gray-400 mt-2">{{ section.optional }}</p>
             </div>
-          </section>
+          </div>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
 <style scoped>
 .menu-item {
   display: flex;
+  justify-content: space-between;
   align-items: baseline;
+  gap: 1rem;
 }
 
 .dots {
-  flex-grow: 1; /* El corazón de la solución: los puntos crecen para llenar el espacio */
-  border-bottom: 2px dotted white;
-  margin: 0 0.75rem;
-  transform: translateY(-4px); /* Ajuste vertical para alinear con el texto */
+  flex-grow: 1;
+  border-bottom: 2px dotted #4A5568; /* gray-600 */
+  margin-bottom: 0.25rem;
 }
 
 .menu-item-price {
+  white-space: nowrap;
   font-weight: bold;
-  color: #F59E0B; /* Amarillo de la marca */
+}
+
+.section-title-wrapper {
+  display: inline-block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .font-bebas.text-8xl {
+    font-size: 4rem; /* 64px */
+  }
+  .font-bebas.text-5xl {
+    font-size: 2.5rem; /* 40px */
+  }
+  .text-xl {
+    font-size: 1.125rem; /* 18px */
+  }
 }
 </style>
