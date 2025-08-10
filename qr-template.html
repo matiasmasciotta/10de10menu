@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Menú - 10de10</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-dark: #121212;
+            --brand-yellow: #F59E0B;
+            --text-light: #FFFFFF;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--brand-dark);
+            background-image: url('https://www.transparenttextures.com/patterns/black-marble.png');
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .printable-card {
+            background-color: var(--brand-dark);
+            border: 2px solid var(--brand-yellow);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            color: var(--text-light);
+            width: 350px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 6rem;
+            color: var(--brand-yellow);
+            letter-spacing: 0.1em;
+            margin: 0;
+        }
+
+        .qr-code-container {
+            margin: 30px 0;
+        }
+
+        .qr-code-container img {
+            border: 5px solid var(--text-light);
+            border-radius: 10px;
+            padding: 10px;
+            background-color: var(--text-light);
+        }
+
+        .instructions {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        @media print {
+            body {
+                background: none;
+                padding: 0;
+            }
+            .printable-card {
+                box-shadow: none;
+                border: 2px solid #000;
+                width: 100%;
+                height: 100%;
+            }
+            .logo {
+                color: #000;
+            }
+            .instructions {
+                color: #000;
+            }
+            .qr-code-container img {
+                 border: 5px solid #000;
+                 background-color: #fff;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="printable-card">
+        <h1 class="logo">10de10</h1>
+        <div class="qr-code-container">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://10de10menu.vercel.app/" alt="Código QR para el Menú">
+        </div>
+        <p class="instructions">Escanea para ver nuestro menú</p>
+    </div>
+
+</body>
+</html>
