@@ -51,21 +51,46 @@ const menuSections = computed(() => {
   return sections;
 });
 
-// Define la estructura de las columnas
+// Define la estructura de las columnas de forma dinámica
 const columns = computed(() => {
     const sections = menuSections.value;
-    const orderedSections = [
-      'ENTRADAS', 'MENÚ INFANTIL', 'PARRILLA', 'HAMBURGUESAS', 
+    
+    // Lista de categorías para mantener un orden preferido
+    const preferredOrder = [
+      'ENTRADAS', 'MODO BAJON', 'MENÚ INFANTIL', 'PARRILLA', 'HAMBURGUESAS', 
       'BEBIDAS SIN ALCOHOL', 'CERVEZAS', 'VINOS/TRAGOS', 'POSTRES'
-    ]
-    .map(title => sections[title])
-    .filter(Boolean);
-
-    return [
-      orderedSections.slice(0, 2),
-      orderedSections.slice(2, 5),
-      orderedSections.slice(5, 8)
     ];
+
+    // Obtener todos los títulos de las secciones disponibles
+    const availableTitles = Object.keys(sections);
+
+    // Ordenar los títulos: primero los del orden preferido, y los nuevos al final
+    const orderedTitles = availableTitles.sort((a, b) => {
+        const indexA = preferredOrder.indexOf(a.toUpperCase());
+        const indexB = preferredOrder.indexOf(b.toUpperCase());
+
+        if (indexA !== -1 && indexB !== -1) return indexA - indexB; // Ambos en la lista, usar orden
+        if (indexA !== -1) return -1; // Solo A está en la lista, A va primero
+        if (indexB !== -1) return 1;  // Solo B está en la lista, B va primero
+        return a.localeCompare(b); // Ninguno está en la lista, ordenar alfabéticamente
+    });
+
+    const orderedSections = orderedTitles.map(title => sections[title]);
+
+    // Ahora, distribuimos las secciones dinámicamente en 3 columnas
+    const columnsData = [[], [], []];
+    let colIndex = 0;
+    orderedSections.forEach(section => {
+        columnsData[colIndex].push(section);
+        // Lógica de distribución simple para un layout balanceado
+        if (section.title === 'MENÚ INFANTIL' || section.title === 'HAMBURGUESAS') {
+            colIndex++;
+        } else if (columnsData[colIndex].length >= 2 && colIndex < 2) {
+            colIndex++;
+        }
+    });
+
+    return columnsData;
 });
 
 // Función para formatear el precio
