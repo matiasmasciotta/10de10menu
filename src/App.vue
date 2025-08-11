@@ -202,32 +202,34 @@ const formatPrice = (price) => {
 
 [class^="smoke-particle-"] {
   position: absolute;
-  bottom: 0;
+  bottom: 10px;
   left: 50%;
-  width: 100px;
-  height: 100px;
-  background: rgba(245, 158, 11, 0.15); /* Tono anaranjado, más intenso */
+  width: 85px;
+  height: 85px;
+  background: rgba(245, 158, 11, 0.25); /* Intensidad media */
   border-radius: 50%;
-  filter: blur(15px); /* Un poco menos borroso */
-  animation: smoke-animation 6s linear infinite; /* Animación más rápida */
+  filter: blur(12px); /* Desenfoque intermedio */
+  box-shadow: 0 0 15px 8px rgba(239, 68, 68, 0.15); /* Brillo más sutil */
+  animation: flame-animation 5s ease-in-out infinite; /* Velocidad intermedia */
 }
 
-.smoke-particle-2 { animation-delay: -2s; left: 40%; transform: scale(0.8); }
-.smoke-particle-3 { animation-delay: -4s; left: 60%; transform: scale(1.2); }
-.smoke-particle-4 { animation-delay: -6s; left: 45%; transform: scale(0.9); }
-.smoke-particle-5 { animation-delay: -8s; left: 55%; transform: scale(1.1); }
-.smoke-particle-6 { animation-delay: -10s; left: 50%; transform: scale(1); }
+.smoke-particle-2 { animation-delay: -1s; left: 40%; transform: scale(0.8); }
+.smoke-particle-3 { animation-delay: -2s; left: 60%; transform: scale(1.2); }
+.smoke-particle-4 { animation-delay: -3s; left: 45%; transform: scale(0.9); }
+.smoke-particle-5 { animation-delay: -4s; left: 55%; transform: scale(1.1); }
+.smoke-particle-6 { animation-delay: -5s; left: 50%; transform: scale(1); }
 
-@keyframes smoke-animation {
+@keyframes flame-animation {
   0% {
-    transform: translate(-50%, 0) scale(0.8);
+    transform: translate(-50%, 0) scale(0.6);
     opacity: 0;
   }
-  20% {
-    opacity: 0.7;
+  50% {
+    transform: translate(-50%, -200px) scale(1.8);
+    opacity: 0.75;
   }
   100% {
-    transform: translate(-50%, -250px) scale(2);
+    transform: translate(-50%, -400px) scale(2.8);
     opacity: 0;
   }
 }
