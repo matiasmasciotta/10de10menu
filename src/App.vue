@@ -1,7 +1,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import Papa from 'papaparse';
-import logo from './assets/10de10 png .png';
+import logo from '@/assets/10de10 png .png';
+import backgroundImageUrl from '@/assets/fondo-idolos.jpg';
 
 // URL del Google Sheet publicado como CSV
 const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSzERRdV7V1KNNuAznk70gSInUUV-0mNSfoVDnmKbp-9wHY0SJUdG5NixiJ5y7CZTxImfHKPWo-0qwx/pub?gid=0&single=true&output=csv';
@@ -94,8 +95,11 @@ const formatPrice = (price) => {
 </script>
 
 <template>
-  <div class="bg-brand-dark text-white min-h-screen font-sans">
-            <header class="relative flex flex-col items-center text-center py-8 bg-black bg-opacity-50 overflow-hidden">
+  <div 
+    class="bg-brand-dark text-white min-h-screen font-sans background-container overflow-x-hidden"
+    :style="{ '--background-image-url': `url(${backgroundImageUrl})` }"
+  >
+            <header class="relative flex flex-col items-center text-center py-8 overflow-hidden">
       <h1 class="font-bebas text-7xl md:text-8xl text-brand-yellow tracking-wider flex items-center justify-center">
         <span class="-mr-2">10</span>
         <span class="text-4xl md:text-5xl mx-1">de</span>
@@ -218,6 +222,25 @@ const formatPrice = (price) => {
 .smoke-particle-4 { animation-delay: -3s; left: 45%; transform: scale(0.9); }
 .smoke-particle-5 { animation-delay: -4s; left: 55%; transform: scale(1.1); }
 .smoke-particle-6 { animation-delay: -5s; left: 50%; transform: scale(1); }
+
+.background-container {
+  position: relative;
+  z-index: 1;
+}
+
+.background-container::before {
+  content: '';
+  position: fixed; /* Clave para el efecto parallax */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: var(--background-image-url);
+  background-repeat: repeat;
+  background-size: 450px; /* Hacemos el patrón un poco más grande */
+  opacity: 0.2; /* Aumentamos la visibilidad */
+  z-index: -1;
+}
 
 @keyframes flame-animation {
   0% {
