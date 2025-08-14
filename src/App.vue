@@ -24,7 +24,7 @@ onMounted(() => {
       console.log('Datos recibidos del CSV:', results.data);
       menuItems.value = results.data.map(item => ({
         order: item.SECCION,
-        category: item.TITULO,
+        category: item.TITULO ? item.TITULO.trim() : '',
         icon: item.ICONO,
         name: item.PRODUCTO,
         description: item.SUBTITULO,
