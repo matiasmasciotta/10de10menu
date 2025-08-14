@@ -40,25 +40,32 @@ onMounted(() => {
   });
 });
 
-// Agrupa y ordena las secciones según el número de SECCION
+// Agrupa las secciones respetando el orden de aparición en el CSV
 const orderedSections = computed(() => {
-  const sections = {};
-  // Agrupar items por categoría
+  const sectionsInOrder = [];
+  const sectionMap = {}; // Para acceso rápido a las secciones ya creadas
+
   menuItems.value.forEach(item => {
     if (!item.category) return;
-    if (!sections[item.category]) {
-      sections[item.category] = {
-        title: item.category,
-        order: item.order,
-        icon: item.icon,
+
+    const categoryTitle = item.category;
+
+    // Si es la primera vez que vemos esta categoría, la creamos y la guardamos
+    if (!sectionMap[categoryTitle]) {
+      const newSection = {
+        title: categoryTitle,
+        icon: item.icon, // Usamos el ícono del primer item que la define
         items: []
       };
+      sectionMap[categoryTitle] = newSection;
+      sectionsInOrder.push(newSection);
     }
-    sections[item.category].items.push(item);
+
+    // Agregamos el item a su sección correspondiente
+    sectionMap[categoryTitle].items.push(item);
   });
 
-  // Convertir el objeto a un array y ordenarlo por el número de 'order'
-  return Object.values(sections).sort((a, b) => a.order - b.order);
+  return sectionsInOrder;
 });
 
 // Distribuye las secciones ordenadas en 3 columnas
