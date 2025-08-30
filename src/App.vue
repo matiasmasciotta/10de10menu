@@ -114,7 +114,7 @@ const formatPrice = (price) => {
   >
             <header class="relative flex flex-col items-center text-center py-8 overflow-hidden">
       <h1 class="font-bebas text-7xl md:text-8xl text-brand-yellow tracking-wider flex items-center justify-center">
-        <span class="-mr-2">10</span>
+        <span class="-mr-2">MENU 10</span>
         <span class="text-4xl md:text-5xl mx-1">de</span>
         <span class="-ml-2">10</span>
       </h1>
