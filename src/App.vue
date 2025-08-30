@@ -22,14 +22,20 @@ onMounted(() => {
     transformHeader: header => header.trim().toUpperCase(),
     complete: (results) => {
       console.log('Datos recibidos del CSV:', results.data);
-      menuItems.value = results.data.map(item => ({
-        order: item.SECCION,
-        category: item.TITULO ? item.TITULO.trim() : '',
-        icon: item.ICONO,
-        name: item.PRODUCTO,
-        description: item.SUBTITULO,
-        price: item.PRECIO
-      })).filter(item => item.category && item.name);
+      menuItems.value = results.data
+        .filter(item => {
+          // Si APAGAR no existe, es null, está vacío o no es 'si' (case-insensitive), mantener el ítem
+          return !item.APAGAR || item.APAGAR.trim().toUpperCase() !== 'SI';
+        }) // Filtrar ítems con APAGAR = 'SI' (case-insensitive)
+        .map(item => ({
+          order: item.SECCION,
+          category: item.TITULO ? item.TITULO.trim() : '',
+          icon: item.ICONO,
+          name: item.PRODUCTO,
+          description: item.SUBTITULO,
+          price: item.PRECIO
+        }))
+        .filter(item => item.category && item.name); // Filtrar ítems sin categoría o nombre
       isLoading.value = false;
     },
     error: (err) => {
