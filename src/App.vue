@@ -112,11 +112,11 @@ const formatPrice = (price) => {
     class="bg-brand-dark text-white min-h-screen font-sans background-container overflow-x-hidden"
     :style="{ '--background-image-url': `url(${backgroundImageUrl})` }"
   >
-            <header class="relative flex flex-col items-center text-center py-8 overflow-hidden">
+            <header class="relative flex flex-col items-center text-center py-6 overflow-hidden">
       <h1 class="font-bebas text-7xl md:text-8xl text-brand-yellow tracking-wider flex items-center justify-center">
-        <span class="-mr-2">MENU 10</span>
-        <span class="text-4xl md:text-5xl mx-1">de</span>
-        <span class="-ml-2">10</span>
+        <span class="-mr-2">MENU</span>
+       <!-- <span class="text-4xl md:text-5xl mx-1">de</span>
+        <span class="-ml-2">10</span> -->
       </h1>
 
       <div class="relative my-4">
@@ -131,10 +131,9 @@ const formatPrice = (price) => {
         </div>
       </div>
 
-      <p class="text-xl md:text-2xl text-gray-300">Cervecería & Parrilla</p>
     </header>
 
-    <main class="container mx-auto py-8">
+    <main class="container mx-auto py-4">
       <!-- Estado de Carga -->
       <div v-if="isLoading" class="text-center text-2xl text-gray-400">
         Cargando menú...
