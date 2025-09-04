@@ -206,6 +206,7 @@ const formatPrice = (price) => {
     /* Ocultamos el triángulo en la vista de ancho completo para un look de banda */
     content: none;
   }
+}
 
 .smoke-container {
   position: absolute;
@@ -242,16 +243,16 @@ const formatPrice = (price) => {
 
 .background-container::before {
   content: '';
-  position: fixed; /* Clave para el efecto parallax */
+  position: fixed !important; /* Clave para el efecto parallax */
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: var(--background-image-url);
-  background-repeat: repeat;
-  background-size: 450px; /* Hacemos el patrón un poco más grande */
-  opacity: 0.2; /* Aumentamos la visibilidad */
-  z-index: -1;
+  background-image: var(--background-image-url) !important;
+  background-repeat: repeat !important;
+  background-size: 350px !important; /* Tamaño optimizado para desktop y mobile */
+  opacity: 0.3 !important; /* Opacidad más visible para desktop */
+  z-index: -1 !important;
 }
 
 @keyframes flame-animation {
@@ -267,7 +268,6 @@ const formatPrice = (price) => {
     transform: translate(-50%, -400px) scale(2.8);
     opacity: 0;
   }
-}
 }
 
 .ribbon::before {
