@@ -139,13 +139,13 @@ const formatPrice = (price) => {
         </div>
       </div>
 
-      <!-- Layout Desktop: fila superior con MENU y logo -->
-      <div class="hidden lg:flex items-center justify-between py-6 px-2 sm:px-4 lg:px-6 border-b border-gray-600">
-        <h1 class="font-bebas text-6xl text-brand-yellow tracking-wider">
+      <!-- Layout Desktop: fila superior con MENU y logo centrados -->
+      <div class="hidden lg:flex items-center justify-center py-6 px-2 sm:px-4 lg:px-6 border-b border-gray-600 gap-8">
+        <h1 class="font-bebas text-9xl text-brand-yellow tracking-wider">
           <span>MENU</span>
         </h1>
-        <div class="relative">
-          <img :src="logo" alt="Logo 10 de 10" class="h-32 w-auto" />
+        <div class="relative flex justify-center">
+          <img :src="logo" alt="Logo 10 de 10" class="h-48 w-auto" />
           <div class="smoke-container">
             <span class="smoke-particle-1"></span>
             <span class="smoke-particle-2"></span>
@@ -159,7 +159,7 @@ const formatPrice = (price) => {
 
     </header>
 
-    <main class="container mx-auto py-4">
+    <main class="w-full max-w-[95%] mx-auto py-1">
       <!-- Estado de Carga -->
       <div v-if="isLoading" class="text-center text-2xl text-gray-400">
         Cargando menú...
@@ -171,7 +171,7 @@ const formatPrice = (price) => {
       </div>
 
       <!-- Contenido del Menú -->
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-x-4 md:gap-x-8 lg:gap-x-16 gap-y-6 px-1 sm:px-2 lg:px-4 pt-6">
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-x-6 md:gap-x-8 lg:gap-x-10 gap-y-6 pt-2 w-full">
         <!-- Columnas del menú -->
         <div v-for="(column, colIndex) in columns" :key="colIndex" class="space-y-6">
           <!-- Secciones del menú -->
@@ -215,12 +215,13 @@ const formatPrice = (price) => {
   position: relative;
   background-color: #F59E0B; /* brand-yellow */
   color: #121212; /* brand-dark */
-  padding: 0.5rem 1rem;
-  width: 100%;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  width: calc(100% + 15px);
   box-sizing: border-box;
   overflow: visible;
   display: block;
   margin: 0;
+  margin-right: -15px;
 }
 
 @media (max-width: 767px) {
@@ -310,18 +311,7 @@ const formatPrice = (price) => {
   border-color: transparent #F59E0B transparent transparent;
 }
 
-/* Triángulo derecho solo en desktop */
-@media (min-width: 1024px) {
-  .ribbon::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: -15px; /* Ancho del triángulo */
-    border-width: 28px 0 28px 15px; /* Triángulo invertido */
-    border-style: solid;
-    border-color: transparent transparent transparent #F59E0B;
-  }
-}
+/* Triángulo derecho eliminado */
 
 .ribbon .title-text {
   position: relative;
