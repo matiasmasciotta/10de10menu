@@ -74,26 +74,34 @@ const orderedSections = computed(() => {
   return sectionsInOrder;
 });
 
-// Distribuye las secciones ordenadas en 3 columnas
+// Distribuye las secciones en exactamente 4 columnas para A4 horizontal
 const columns = computed(() => {
-    const columnsData = [[], [], []];
+    const columnsData = [[], [], [], [], []]; // Exactamente 5 columnas fijas
     const sections = orderedSections.value;
-
-    // Lógica de distribución mejorada para balancear las columnas
-    const totalItems = sections.reduce((acc, section) => acc + section.items.length, 0);
-    const itemsPerColumn = Math.ceil(totalItems / 3);
-
     let currentColumn = 0;
-    let currentColumnItems = 0;
-
-    sections.forEach(section => {
-        columnsData[currentColumn].push(section);
-        currentColumnItems += section.items.length;
-
-        if (currentColumn < 2 && currentColumnItems >= itemsPerColumn) {
+    let currentColumnHeight = 0;
+    
+    // Altura máxima por columna para A4 horizontal (21cm alto)
+    const maxColumnHeight = 15; // Ajustado para 21cm de altura
+    
+    sections.forEach((section) => {
+        // Calcular altura estimada de esta sección (título + ítems)
+        const sectionHeight = 2 + section.items.length;
+        
+        // Si agregar esta sección excede la altura máxima, pasar a siguiente columna
+        if (currentColumnHeight + sectionHeight > maxColumnHeight && currentColumnHeight > 0) {
             currentColumn++;
-            currentColumnItems = 0;
+            // Si llegamos al final de las 5 columnas, seguir llenando la última
+            if (currentColumn >= 5) {
+                currentColumn = 4;
+            } else {
+                currentColumnHeight = 0;
+            }
         }
+        
+        // Agregar la sección a la columna actual
+        columnsData[currentColumn].push(section);
+        currentColumnHeight += sectionHeight;
     });
 
     return columnsData;
@@ -112,22 +120,40 @@ const formatPrice = (price) => {
     class="bg-brand-dark text-white min-h-screen font-sans background-container overflow-x-hidden"
     :style="{ '--background-image-url': `url(${backgroundImageUrl})` }"
   >
-            <header class="relative flex flex-col items-center text-center py-6 overflow-hidden">
-      <h1 class="font-bebas text-7xl md:text-8xl text-brand-yellow tracking-wider flex items-center justify-center">
-        <span class="-mr-2">MENU</span>
-       <!-- <span class="text-4xl md:text-5xl mx-1">de</span>
-        <span class="-ml-2">10</span> -->
-      </h1>
+            <header class="relative py-6 overflow-hidden">
+      <!-- Layout Mobile: centrado vertical -->
+      <div class="lg:hidden flex flex-col items-center text-center">
+        <h1 class="font-bebas text-7xl md:text-8xl text-brand-yellow tracking-wider flex items-center justify-center">
+          <span class="-mr-2">MENU</span>
+        </h1>
+        <div class="relative my-4">
+          <img :src="logo" alt="Logo 10 de 10" class="h-56 w-auto" />
+          <div class="smoke-container">
+            <span class="smoke-particle-1"></span>
+            <span class="smoke-particle-2"></span>
+            <span class="smoke-particle-3"></span>
+            <span class="smoke-particle-4"></span>
+            <span class="smoke-particle-5"></span>
+            <span class="smoke-particle-6"></span>
+          </div>
+        </div>
+      </div>
 
-      <div class="relative my-4">
-        <img :src="logo" alt="Logo 10 de 10" class="h-56 w-auto" />
-        <div class="smoke-container">
-          <span class="smoke-particle-1"></span>
-          <span class="smoke-particle-2"></span>
-          <span class="smoke-particle-3"></span>
-          <span class="smoke-particle-4"></span>
-          <span class="smoke-particle-5"></span>
-          <span class="smoke-particle-6"></span>
+      <!-- Layout Desktop: fila superior con MENU y logo -->
+      <div class="hidden lg:flex items-center justify-between py-6 px-2 sm:px-4 lg:px-6 border-b border-gray-600">
+        <h1 class="font-bebas text-6xl text-brand-yellow tracking-wider">
+          <span>MENU</span>
+        </h1>
+        <div class="relative">
+          <img :src="logo" alt="Logo 10 de 10" class="h-32 w-auto" />
+          <div class="smoke-container">
+            <span class="smoke-particle-1"></span>
+            <span class="smoke-particle-2"></span>
+            <span class="smoke-particle-3"></span>
+            <span class="smoke-particle-4"></span>
+            <span class="smoke-particle-5"></span>
+            <span class="smoke-particle-6"></span>
+          </div>
         </div>
       </div>
 
@@ -145,14 +171,14 @@ const formatPrice = (price) => {
       </div>
 
       <!-- Contenido del Menú -->
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-8 px-4 sm:px-6 lg:px-8">
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-x-4 md:gap-x-8 lg:gap-x-16 gap-y-6 px-1 sm:px-2 lg:px-4 pt-6">
         <!-- Columnas del menú -->
-        <div v-for="(column, colIndex) in columns" :key="colIndex" class="space-y-8">
+        <div v-for="(column, colIndex) in columns" :key="colIndex" class="space-y-6">
           <!-- Secciones del menú -->
-          <div v-for="section in column" :key="section.title">
-                        <div :class="['section-title-wrapper', { 'bg-yellow-400 text-black rounded-lg p-2': section.title === 'MENÚ INFANTIL' }]">
-                            <h2 :class="['font-bebas text-5xl tracking-wide flex items-center justify-center', { 'ribbon': section.title !== 'MENÚ INFANTIL' }]">
-                <span v-if="section.icon && section.title !== 'MENÚ INFANTIL'" class="mr-4">{{ section.icon }}</span>
+          <div v-for="section in column" :key="section.title" class="w-full">
+                        <div :class="['section-title-wrapper w-full', { 'bg-yellow-400 text-black rounded-lg p-2': section.title === 'MENÚ INFANTIL' }]">
+                            <h2 :class="['font-bebas text-2xl lg:text-3xl tracking-wide flex items-center justify-center w-full', { 'ribbon': section.title !== 'MENÚ INFANTIL' }]">
+                <span v-if="section.icon && section.title !== 'MENÚ INFANTIL'" class="mr-4 whitespace-pre">{{ section.icon }}</span>
                 <span class="title-text">{{ section.title }}</span>
               </h2>
             </div>
@@ -189,8 +215,12 @@ const formatPrice = (price) => {
   position: relative;
   background-color: #F59E0B; /* brand-yellow */
   color: #121212; /* brand-dark */
-  padding: 0.5rem 1.5rem;
+  padding: 0.5rem 1rem;
   width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+  display: block;
+  margin: 0;
 }
 
 @media (max-width: 767px) {
@@ -278,6 +308,19 @@ const formatPrice = (price) => {
   border-width: 28px 15px 28px 0; /* Ajusta la altura del triángulo (28px*2 = 56px) */
   border-style: solid;
   border-color: transparent #F59E0B transparent transparent;
+}
+
+/* Triángulo derecho solo en desktop */
+@media (min-width: 1024px) {
+  .ribbon::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -15px; /* Ancho del triángulo */
+    border-width: 28px 0 28px 15px; /* Triángulo invertido */
+    border-style: solid;
+    border-color: transparent transparent transparent #F59E0B;
+  }
 }
 
 .ribbon .title-text {
