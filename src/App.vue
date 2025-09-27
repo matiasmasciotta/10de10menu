@@ -74,39 +74,6 @@ const orderedSections = computed(() => {
   return sectionsInOrder;
 });
 
-// Distribuye las secciones en exactamente 4 columnas para A4 horizontal
-const columns = computed(() => {
-    const columnsData = [[], [], [], [], []]; // Exactamente 5 columnas fijas
-    const sections = orderedSections.value;
-    let currentColumn = 0;
-    let currentColumnHeight = 0;
-    
-    // Altura máxima por columna para A4 horizontal (21cm alto)
-    const maxColumnHeight = 15; // Ajustado para 21cm de altura
-    
-    sections.forEach((section) => {
-        // Calcular altura estimada de esta sección (título + ítems)
-        const sectionHeight = 2 + section.items.length;
-        
-        // Si agregar esta sección excede la altura máxima, pasar a siguiente columna
-        if (currentColumnHeight + sectionHeight > maxColumnHeight && currentColumnHeight > 0) {
-            currentColumn++;
-            // Si llegamos al final de las 5 columnas, seguir llenando la última
-            if (currentColumn >= 5) {
-                currentColumn = 4;
-            } else {
-                currentColumnHeight = 0;
-            }
-        }
-        
-        // Agregar la sección a la columna actual
-        columnsData[currentColumn].push(section);
-        currentColumnHeight += sectionHeight;
-    });
-
-    return columnsData;
-});
-
 // Función para formatear el precio
 const formatPrice = (price) => {
   if (price === null || price === undefined) return '';
@@ -171,11 +138,10 @@ const formatPrice = (price) => {
       </div>
 
       <!-- Contenido del Menú -->
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-x-6 md:gap-x-8 lg:gap-x-10 gap-y-6 pt-2 w-full">
-        <!-- Columnas del menú -->
-        <div v-for="(column, colIndex) in columns" :key="colIndex" class="space-y-6">
-          <!-- Secciones del menú -->
-          <div v-for="section in column" :key="section.title" class="w-full">
+      <!-- Contenido del Menú con Columnas Dinámicas -->
+      <div v-else class="columns-1 md:columns-2 lg:columns-5 gap-x-6 md:gap-x-8 lg:gap-x-10 w-full">
+        <!-- Secciones del menú -->
+        <div v-for="section in orderedSections" :key="section.title" class="w-full break-inside-avoid mb-6">
                         <div :class="['section-title-wrapper w-full', { 'bg-yellow-400 text-black rounded-lg p-2': section.title === 'MENÚ INFANTIL' }]">
                             <h2 :class="['font-bebas text-2xl lg:text-3xl tracking-wide flex items-center justify-center w-full', { 'ribbon': section.title !== 'MENÚ INFANTIL' }]">
                 <span v-if="section.icon && section.title !== 'MENÚ INFANTIL'" class="mr-4 whitespace-pre">{{ section.icon }}</span>
@@ -203,7 +169,6 @@ const formatPrice = (price) => {
                 </div>
               </div>
             </div>
-          </div>
         </div>
       </div>
     </main>
