@@ -33,7 +33,10 @@ onMounted(() => {
           icon: item.ICONO,
           name: item.PRODUCTO,
           description: item.SUBTITULO,
-          price: item.PRECIO
+          price: item.PRECIO,
+          priceSimple: item.PRECIO_SIMPLE,
+          priceDouble: item.PRECIO_DOBLE,
+          priceTriple: item.PRECIO_TRIPLE
         }))
         .filter(item => item.category && item.name); // Filtrar ítems sin categoría o nombre
       isLoading.value = false;
@@ -46,9 +49,18 @@ onMounted(() => {
   });
 });
 
-// Agrupa las secciones respetando el orden de aparición en el CSV
-const orderedSections = computed(() => {
-  const sectionsInOrder = [];
+// Agrupa las secciones en 5 columnas específicas
+const columnsData = computed(() => {
+  // Inicializamos las 5 columnas vacías
+  const columns = [[], [], [], [], []];
+  
+  // Mapa de asignación de categorías a columnas (basado en el diseño deseado)
+  // Columna 1: Entradas, Picadas, Platos
+  // Columna 2: Hamburguesas (Más ancha)
+  // Columna 3: Parrilla, Vinos
+  // Columna 4: Cerveza, Tragos
+  // Columna 5: Bebidas, Postres, Cafeteria
+  
   const sectionMap = {}; // Para acceso rápido a las secciones ya creadas
 
   menuItems.value.forEach(item => {
@@ -56,22 +68,39 @@ const orderedSections = computed(() => {
 
     const categoryTitle = item.category;
 
-    // Si es la primera vez que vemos esta categoría, la creamos y la guardamos
+    // Si es la primera vez que vemos esta categoría, la creamos
     if (!sectionMap[categoryTitle]) {
       const newSection = {
         title: categoryTitle,
-        icon: item.icon, // Usamos el ícono del primer item que la define
+        icon: item.icon,
         items: []
       };
       sectionMap[categoryTitle] = newSection;
-      sectionsInOrder.push(newSection);
+
+      // Asignar a la columna correspondiente
+      const titleUpper = categoryTitle.toUpperCase();
+      let columnIndex = 0; // Default a col 1
+
+      if (titleUpper.includes('HAMBURGUESA')) {
+        columnIndex = 1; // Col 2
+      } else if (titleUpper.includes('PARRILLA')) {
+        columnIndex = 2; // Col 3
+      } else if (titleUpper.includes('CERVEZA') || titleUpper.includes('TRAGO') || titleUpper.includes('VINO')) {
+        columnIndex = 3; // Col 4
+      } else if (titleUpper.includes('BEBIDA') || titleUpper.includes('POSTRE') || titleUpper.includes('CAFETER') || titleUpper.includes('MENU DEL DÍA') || titleUpper.includes('MENÚ DEL DÍA') || titleUpper.includes('MENU DEL DIA')) {
+        columnIndex = 4; // Col 5
+      } else {
+        columnIndex = 0; // Col 1 (Entradas, Picadas, Platos, etc.)
+      }
+      
+      columns[columnIndex].push(newSection);
     }
 
     // Agregamos el item a su sección correspondiente
     sectionMap[categoryTitle].items.push(item);
   });
 
-  return sectionsInOrder;
+  return columns;
 });
 
 // Función para formatear el precio
@@ -87,14 +116,14 @@ const formatPrice = (price) => {
     class="bg-brand-dark text-white min-h-screen font-sans background-container overflow-x-hidden"
     :style="{ '--background-image-url': `url(${backgroundImageUrl})` }"
   >
-            <header class="relative py-6 overflow-hidden">
+            <header class="relative py-4 overflow-hidden">
       <!-- Layout Mobile: centrado vertical -->
       <div class="lg:hidden flex flex-col items-center text-center">
-        <h1 class="font-bebas text-7xl md:text-8xl text-brand-yellow tracking-wider flex items-center justify-center">
-          <span class="-mr-2">MENU</span>
+        <h1 class="font-bebas text-6xl md:text-7xl text-brand-yellow tracking-wider flex items-center justify-center">
+          <span class="-mr-2">MENÚ</span>
         </h1>
-        <div class="relative my-4">
-          <img :src="logo" alt="Logo 10 de 10" class="h-56 w-auto" />
+        <div class="relative my-2">
+          <img :src="logo" alt="Logo 10 de 10" class="h-48 w-auto" />
           <div class="smoke-container">
             <span class="smoke-particle-1"></span>
             <span class="smoke-particle-2"></span>
@@ -107,12 +136,12 @@ const formatPrice = (price) => {
       </div>
 
       <!-- Layout Desktop: fila superior con MENU y logo centrados -->
-      <div class="hidden lg:flex items-center justify-center py-6 px-2 sm:px-4 lg:px-6 border-b border-gray-600 gap-8">
-        <h1 class="font-bebas text-9xl text-brand-yellow tracking-wider">
-          <span>MENU</span>
+      <div class="hidden lg:flex items-center justify-center py-4 px-2 sm:px-4 lg:px-6 border-b border-gray-600 gap-6">
+        <h1 class="font-bebas text-8xl text-brand-yellow tracking-wider">
+          <span>MENÚ</span>
         </h1>
         <div class="relative flex justify-center">
-          <img :src="logo" alt="Logo 10 de 10" class="h-48 w-auto" />
+          <img :src="logo" alt="Logo 10 de 10" class="h-40 w-auto" />
           <div class="smoke-container">
             <span class="smoke-particle-1"></span>
             <span class="smoke-particle-2"></span>
@@ -139,11 +168,17 @@ const formatPrice = (price) => {
 
       <!-- Contenido del Menú -->
       <!-- Contenido del Menú con Columnas Dinámicas -->
-      <div v-else class="columns-1 md:columns-2 lg:columns-5 gap-x-6 md:gap-x-8 lg:gap-x-10 w-full">
-        <!-- Secciones del menú -->
-        <div v-for="section in orderedSections" :key="section.title" class="w-full break-inside-avoid mb-6">
-                        <div :class="['section-title-wrapper w-full', { 'bg-yellow-400 text-black rounded-lg p-2': section.title === 'MENÚ INFANTIL' }]">
-                            <h2 :class="['font-bebas text-2xl lg:text-3xl tracking-wide flex items-center justify-center w-full', { 'ribbon': section.title !== 'MENÚ INFANTIL' }]">
+      <!-- Contenido del Menú con Grid Layout -->
+      <div v-else class="grid gap-8 lg:gap-10 w-full items-start custom-grid">
+        <!-- Iteramos sobre las 5 columnas -->
+        <div 
+          v-for="(column, index) in columnsData" 
+          :key="index" 
+          class="flex flex-col gap-8"
+        >
+          <div v-for="section in column" :key="section.title" class="w-full">
+            <div :class="['section-title-wrapper w-full', { 'bg-yellow-400 text-black rounded-lg p-2': section.title === 'MENÚ INFANTIL' }]">
+              <h2 :class="['font-bebas text-2xl lg:text-3xl tracking-wide flex items-center justify-center w-full', { 'ribbon': section.title !== 'MENÚ INFANTIL' }]">
                 <span v-if="section.icon && section.title !== 'MENÚ INFANTIL'" class="mr-4 whitespace-pre">{{ section.icon }}</span>
                 <span class="title-text">{{ section.title }}</span>
               </h2>
@@ -151,9 +186,64 @@ const formatPrice = (price) => {
             
             <!-- Items de la sección -->
             <div class="space-y-4 mt-4">
+              <!-- Header de Precios para Hamburguesas (Solo Desktop) -->
+              <div v-if="section.title.toUpperCase().includes('HAMBURGUESA')" class="hidden lg:flex justify-end text-xs text-brand-yellow font-bold italic mb-2">
+                <span class="w-20 text-center">SIMPLE</span>
+                <span class="w-20 text-center">DOBLE</span>
+                <span class="w-20 text-center">TRIPLE</span>
+              </div>
+
               <div v-for="item in section.items" :key="item.name">
-                                <!-- Item con precio -->
-                <div v-if="item.price !== null && item.price !== undefined" class="menu-item">
+                
+                <!-- Item de Variantes (SOLO HAMBURGUESAS) -->
+                <div v-if="(item.priceSimple || item.priceDouble || item.priceTriple) && section.title.toUpperCase().includes('HAMBURGUESA')" class="menu-item-variant">
+                  <!-- Mobile View -->
+                  <div class="lg:hidden">
+                    <div class="flex justify-between items-baseline mb-1">
+                      <h3 class="text-xl">{{ item.name }}</h3>
+                    </div>
+                    <p v-if="item.description" class="text-sm text-gray-400 italic mb-2">{{ item.description }}</p>
+                    
+                    <!-- Price Cards Container (Full Width) -->
+                    <div class="flex w-full gap-2 mt-1">
+                      <div v-if="item.priceSimple" class="flex-1 flex flex-col items-center bg-gray-800 rounded p-1">
+                        <span class="text-[10px] text-brand-yellow italic">SIMPLE</span>
+                        <span class="font-bold text-sm">${{ formatPrice(item.priceSimple) }}</span>
+                      </div>
+                      <div v-if="item.priceDouble" class="flex-1 flex flex-col items-center bg-gray-800 rounded p-1">
+                        <span class="text-[10px] text-brand-yellow italic">DOBLE</span>
+                        <span class="font-bold text-sm">${{ formatPrice(item.priceDouble) }}</span>
+                      </div>
+                      <div v-if="item.priceTriple" class="flex-1 flex flex-col items-center bg-gray-800 rounded p-1">
+                        <span class="text-[10px] text-brand-yellow italic">TRIPLE</span>
+                        <span class="font-bold text-sm">${{ formatPrice(item.priceTriple) }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Desktop View -->
+                  <div class="hidden lg:flex justify-between items-baseline">
+                    <div class="flex-grow pr-4">
+                      <h3 class="text-xl">{{ item.name }}</h3>
+                      <p v-if="item.description" class="text-sm text-gray-400 italic">{{ item.description }}</p>
+                    </div>
+                    <div class="flex gap-0">
+                      <div class="w-20 text-center font-bold">
+                        {{ item.priceSimple ? '$' + formatPrice(item.priceSimple) : '-' }}
+                      </div>
+                      <div class="w-20 text-center font-bold">
+                        {{ item.priceDouble ? '$' + formatPrice(item.priceDouble) : '-' }}
+                      </div>
+                      <div class="w-20 text-center font-bold">
+                        {{ item.priceTriple ? '$' + formatPrice(item.priceTriple) : '-' }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="hidden lg:block border-b border-gray-700 mt-2"></div>
+                </div>
+
+                <!-- Item Normal con precio -->
+                <div v-else-if="item.price !== null && item.price !== undefined" class="menu-item">
                   <div class="flex-shrink-0 max-w-[70%]">
                     <h3 class="text-xl">{{ item.name }}</h3>
                     <p v-if="item.description" class="text-sm text-gray-400 italic">{{ item.description }}</p>
@@ -162,13 +252,14 @@ const formatPrice = (price) => {
                   <span class="menu-item-price">${{ formatPrice(item.price) }}</span>
                 </div>
 
-                <!-- Item sin precio (ej. un subtítulo de sección) -->
+                <!-- Item sin precio -->
                 <div v-else class="menu-item-no-price">
                   <h3 class="text-xl">{{ item.name }}</h3>
                   <p v-if="item.description" class="text-sm text-gray-400 italic">{{ item.description }}</p>
                 </div>
               </div>
             </div>
+          </div>
         </div>
       </div>
     </main>
@@ -267,13 +358,7 @@ const formatPrice = (price) => {
 }
 
 .ribbon::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -15px; /* Ancho del triángulo */
-  border-width: 28px 15px 28px 0; /* Ajusta la altura del triángulo (28px*2 = 56px) */
-  border-style: solid;
-  border-color: transparent #F59E0B transparent transparent;
+  content: none;
 }
 
 /* Triángulo derecho eliminado */
