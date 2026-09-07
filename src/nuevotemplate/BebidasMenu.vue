@@ -110,13 +110,10 @@ const formatPrice = (price) => {
 
 .menu-viewport {
   width: 100vw;
-  /* Min height to allow zooming and scrolling when zoomed */
-  min-height: 100vh; 
   display: flex;
   justify-content: center;
   align-items: flex-start;
   background-color: #050505;
-  /* Eliminamos overflow: hidden para que el scroll nativo y zoom funcionen bien */
 }
 
 .a4-menu {
