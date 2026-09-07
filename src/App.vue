@@ -8,6 +8,25 @@ import BebidasMenu from './nuevotemplate/BebidasMenu.vue';
 
 const currentView = ref('nuevo');
 
+let clickCount = 0;
+let clickTimeout = null;
+
+const handleSecretToggle = () => {
+  currentView.value = currentView.value === 'nuevo' ? 'old' : 'nuevo';
+};
+
+const handleOldLogoClick = () => {
+  clickCount++;
+  if (clickCount >= 5) {
+    handleSecretToggle();
+    clickCount = 0;
+  }
+  clearTimeout(clickTimeout);
+  clickTimeout = setTimeout(() => {
+    clickCount = 0;
+  }, 1000);
+};
+
 // URL del Google Sheet publicado como CSV
 const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSzERRdV7V1KNNuAznk70gSInUUV-0mNSfoVDnmKbp-9wHY0SJUdG5NixiJ5y7CZTxImfHKPWo-0qwx/pub?gid=0&single=true&output=csv';
 const GOOGLE_SHEET_URL_NUEVO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSuHkI8AOW2u7FvRUDXWleaRgR_2p_IIKbmQHzp_fJtWyornsA1izT5UrhcCvoqGQdKCsiFLUgPsWEH/pub?output=csv';
@@ -101,7 +120,7 @@ const formatPrice = (price) => {
           <h1 class="font-bebas text-7xl md:text-8xl text-brand-yellow tracking-wider flex items-center justify-center">
             <span class="-mr-2">MENU</span>
           </h1>
-          <div class="relative my-4">
+          <div class="relative my-4" @click="handleOldLogoClick" style="cursor: pointer;">
             <img :src="logo" alt="Logo 10 de 10" class="h-56 w-auto" />
             <div class="smoke-container">
               <span class="smoke-particle-1"></span>
@@ -119,7 +138,7 @@ const formatPrice = (price) => {
           <h1 class="font-bebas text-9xl text-brand-yellow tracking-wider">
             <span>MENU</span>
           </h1>
-          <div class="relative flex justify-center">
+          <div class="relative flex justify-center" @click="handleOldLogoClick" style="cursor: pointer;">
             <img :src="logo" alt="Logo 10 de 10" class="h-48 w-auto" />
             <div class="smoke-container">
               <span class="smoke-particle-1"></span>
@@ -183,7 +202,7 @@ const formatPrice = (price) => {
 
     <!-- Nuevos Menús Apilados -->
     <div v-if="currentView === 'nuevo'" class="flex flex-col bg-black">
-      <ComidasMenu />
+      <ComidasMenu @secret-toggle="handleSecretToggle" />
       <BebidasMenu />
     </div>
 

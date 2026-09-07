@@ -5,6 +5,22 @@ import fondo from '@/assets/fondo_comidas_3.png';
 
 const { orderedSections, isLoading, error, fetchMenuData } = useMenuData();
 
+const emit = defineEmits(['secret-toggle']);
+let clickCount = 0;
+let clickTimeout = null;
+
+const handleLogoClick = () => {
+  clickCount++;
+  if (clickCount >= 5) {
+    emit('secret-toggle');
+    clickCount = 0;
+  }
+  clearTimeout(clickTimeout);
+  clickTimeout = setTimeout(() => {
+    clickCount = 0;
+  }, 1000); // Se resetea si dejas de tocar por 1 segundo
+};
+
 const col1Categories = [
   'ENTRADAS & PARA PICAR',
   'HAMBURGUESAS',
@@ -56,7 +72,7 @@ const formatPrice = (price) => {
     <!-- Contenedor A4 Fluido -->
     <div v-else class="a4-menu" :style="{ backgroundImage: `url(${fondo})` }">
       <!-- Espacio del Header (logo, titulo) -->
-      <div class="header-space"></div>
+      <div class="header-space" @click="handleLogoClick" style="cursor: pointer;"></div>
 
       <div class="menu-columns">
         <!-- Columna 1 -->
