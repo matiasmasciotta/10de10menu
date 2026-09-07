@@ -3,9 +3,14 @@ import { ref, computed, onMounted } from 'vue';
 import Papa from 'papaparse';
 import logo from '@/assets/10de10 png .png';
 import backgroundImageUrl from '@/assets/fondo-idolos.jpg';
+import ComidasMenu from './nuevotemplate/ComidasMenu.vue';
+import BebidasMenu from './nuevotemplate/BebidasMenu.vue';
+
+const currentView = ref('nuevo');
 
 // URL del Google Sheet publicado como CSV
 const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSzERRdV7V1KNNuAznk70gSInUUV-0mNSfoVDnmKbp-9wHY0SJUdG5NixiJ5y7CZTxImfHKPWo-0qwx/pub?gid=0&single=true&output=csv';
+const GOOGLE_SHEET_URL_NUEVO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSuHkI8AOW2u7FvRUDXWleaRgR_2p_IIKbmQHzp_fJtWyornsA1izT5UrhcCvoqGQdKCsiFLUgPsWEH/pub?output=csv';
 
 // Estados para manejar la carga y errores
 const menuItems = ref([]);
@@ -83,67 +88,69 @@ const formatPrice = (price) => {
 </script>
 
 <template>
-  <div 
-    class="bg-brand-dark text-white min-h-screen font-sans background-container overflow-x-hidden"
-    :style="{ '--background-image-url': `url(${backgroundImageUrl})` }"
-  >
-            <header class="relative py-6 overflow-hidden">
-      <!-- Layout Mobile: centrado vertical -->
-      <div class="lg:hidden flex flex-col items-center text-center">
-        <h1 class="font-bebas text-7xl md:text-8xl text-brand-yellow tracking-wider flex items-center justify-center">
-          <span class="-mr-2">MENU</span>
-        </h1>
-        <div class="relative my-4">
-          <img :src="logo" alt="Logo 10 de 10" class="h-56 w-auto" />
-          <div class="smoke-container">
-            <span class="smoke-particle-1"></span>
-            <span class="smoke-particle-2"></span>
-            <span class="smoke-particle-3"></span>
-            <span class="smoke-particle-4"></span>
-            <span class="smoke-particle-5"></span>
-            <span class="smoke-particle-6"></span>
+  <div>
+    <!-- Menú Antiguo -->
+    <div 
+      v-show="currentView === 'old'"
+      class="bg-brand-dark text-white min-h-screen font-sans background-container overflow-x-hidden pt-16"
+      :style="{ '--background-image-url': `url(${backgroundImageUrl})` }"
+    >
+      <header class="relative py-6 overflow-hidden">
+        <!-- Layout Mobile: centrado vertical -->
+        <div class="lg:hidden flex flex-col items-center text-center">
+          <h1 class="font-bebas text-7xl md:text-8xl text-brand-yellow tracking-wider flex items-center justify-center">
+            <span class="-mr-2">MENU</span>
+          </h1>
+          <div class="relative my-4">
+            <img :src="logo" alt="Logo 10 de 10" class="h-56 w-auto" />
+            <div class="smoke-container">
+              <span class="smoke-particle-1"></span>
+              <span class="smoke-particle-2"></span>
+              <span class="smoke-particle-3"></span>
+              <span class="smoke-particle-4"></span>
+              <span class="smoke-particle-5"></span>
+              <span class="smoke-particle-6"></span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Layout Desktop: fila superior con MENU y logo centrados -->
-      <div class="hidden lg:flex items-center justify-center py-6 px-2 sm:px-4 lg:px-6 border-b border-gray-600 gap-8">
-        <h1 class="font-bebas text-9xl text-brand-yellow tracking-wider">
-          <span>MENU</span>
-        </h1>
-        <div class="relative flex justify-center">
-          <img :src="logo" alt="Logo 10 de 10" class="h-48 w-auto" />
-          <div class="smoke-container">
-            <span class="smoke-particle-1"></span>
-            <span class="smoke-particle-2"></span>
-            <span class="smoke-particle-3"></span>
-            <span class="smoke-particle-4"></span>
-            <span class="smoke-particle-5"></span>
-            <span class="smoke-particle-6"></span>
+        <!-- Layout Desktop: fila superior con MENU y logo centrados -->
+        <div class="hidden lg:flex items-center justify-center py-6 px-2 sm:px-4 lg:px-6 border-b border-gray-600 gap-8">
+          <h1 class="font-bebas text-9xl text-brand-yellow tracking-wider">
+            <span>MENU</span>
+          </h1>
+          <div class="relative flex justify-center">
+            <img :src="logo" alt="Logo 10 de 10" class="h-48 w-auto" />
+            <div class="smoke-container">
+              <span class="smoke-particle-1"></span>
+              <span class="smoke-particle-2"></span>
+              <span class="smoke-particle-3"></span>
+              <span class="smoke-particle-4"></span>
+              <span class="smoke-particle-5"></span>
+              <span class="smoke-particle-6"></span>
+            </div>
           </div>
         </div>
-      </div>
+      </header>
 
-    </header>
+      <main class="w-full max-w-[95%] mx-auto py-1">
+        <!-- Estado de Carga -->
+        <div v-if="isLoading" class="text-center text-2xl text-gray-400">
+          Cargando menú...
+        </div>
 
-    <main class="w-full max-w-[95%] mx-auto py-1">
-      <!-- Estado de Carga -->
-      <div v-if="isLoading" class="text-center text-2xl text-gray-400">
-        Cargando menú...
-      </div>
+        <!-- Estado de Error -->
+        <div v-else-if="error" class="text-center text-2xl text-red-500">
+          {{ error }}
+        </div>
 
-      <!-- Estado de Error -->
-      <div v-else-if="error" class="text-center text-2xl text-red-500">
-        {{ error }}
-      </div>
-
-      <!-- Contenido del Menú -->
-      <!-- Contenido del Menú con Columnas Dinámicas -->
-      <div v-else class="columns-1 md:columns-2 lg:columns-5 gap-x-6 md:gap-x-8 lg:gap-x-10 w-full">
-        <!-- Secciones del menú -->
-        <div v-for="section in orderedSections" :key="section.title" class="w-full break-inside-avoid mb-6">
-                        <div :class="['section-title-wrapper w-full', { 'bg-yellow-400 text-black rounded-lg p-2': section.title === 'MENÚ INFANTIL' }]">
-                            <h2 :class="['font-bebas text-2xl lg:text-3xl tracking-wide flex items-center justify-center w-full', { 'ribbon': section.title !== 'MENÚ INFANTIL' }]">
+        <!-- Contenido del Menú -->
+        <!-- Contenido del Menú con Columnas Dinámicas -->
+        <div v-else class="columns-1 md:columns-2 lg:columns-5 gap-x-6 md:gap-x-8 lg:gap-x-10 w-full">
+          <!-- Secciones del menú -->
+          <div v-for="section in orderedSections" :key="section.title" class="w-full break-inside-avoid mb-6">
+            <div :class="['section-title-wrapper w-full', { 'bg-yellow-400 text-black rounded-lg p-2': section.title === 'MENÚ INFANTIL' }]">
+              <h2 :class="['font-bebas text-2xl lg:text-3xl tracking-wide flex items-center justify-center w-full', { 'ribbon': section.title !== 'MENÚ INFANTIL' }]">
                 <span v-if="section.icon && section.title !== 'MENÚ INFANTIL'" class="mr-4 whitespace-pre">{{ section.icon }}</span>
                 <span class="title-text">{{ section.title }}</span>
               </h2>
@@ -152,7 +159,7 @@ const formatPrice = (price) => {
             <!-- Items de la sección -->
             <div class="space-y-4 mt-4">
               <div v-for="item in section.items" :key="item.name">
-                                <!-- Item con precio -->
+                <!-- Item con precio -->
                 <div v-if="item.price !== null && item.price !== undefined" class="menu-item">
                   <div class="flex-shrink-0 max-w-[70%]">
                     <h3 class="text-xl">{{ item.name }}</h3>
@@ -169,9 +176,17 @@ const formatPrice = (price) => {
                 </div>
               </div>
             </div>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
+
+    <!-- Nuevos Menús Apilados -->
+    <div v-if="currentView === 'nuevo'" class="flex flex-col bg-black">
+      <ComidasMenu />
+      <BebidasMenu />
+    </div>
+
   </div>
 </template>
 
