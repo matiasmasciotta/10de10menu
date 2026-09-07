@@ -215,7 +215,6 @@ const formatPrice = (price) => {
 .item-info {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
   max-width: 80%;
 }
 
