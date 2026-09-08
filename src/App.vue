@@ -5,6 +5,7 @@ import logo from '@/assets/10de10 png .png';
 import backgroundImageUrl from '@/assets/fondo-idolos.jpg';
 import ComidasMenu from './nuevotemplate/ComidasMenu.vue';
 import BebidasMenu from './nuevotemplate/BebidasMenu.vue';
+import ResenasView from './nuevotemplate/ResenasView.vue';
 
 const currentView = ref('nuevo');
 
@@ -204,6 +205,7 @@ const formatPrice = (price) => {
     <div v-if="currentView === 'nuevo'" class="flex flex-col bg-black">
       <ComidasMenu @secret-toggle="handleSecretToggle" />
       <BebidasMenu />
+      <ResenasView />
     </div>
 
   </div>
