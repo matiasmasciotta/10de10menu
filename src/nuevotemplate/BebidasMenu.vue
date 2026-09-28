@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted } from 'vue';
 import { useMenuData } from './useMenuData';
-import fondo from '@/assets/fondo_bebida_trans.png';
+import fondo from '@/assets/fondo_bebidatrans.png';
 
 const { orderedSections, isLoading, error, fetchMenuData } = useMenuData();
 
