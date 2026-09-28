@@ -156,7 +156,7 @@ const formatPrice = (price) => {
 }
 
 .header-space {
-  height: 29cqw; /* Espacio para el logo arriba aumentado más */
+  height: 29cqw; /* Ajustado ligeramente */
   width: 100%;
 }
 
@@ -183,16 +183,16 @@ const formatPrice = (price) => {
 }
 
 .menu-section {
-  margin-bottom: 1.4cqw; /* Acerca un poco más las secciones */
+  margin-bottom: 1.4cqw; /* Menos margen entre secciones para que entre todo */
 }
 
 .section-title {
   font-family: 'Permanent Marker', cursive;
-  font-size: 2.5cqw;
+  font-size: 2.5cqw; /* Un poco mas chico */
   color: #ff4500;
   letter-spacing: 0.1cqw;
   transform: rotate(-2deg);
-  margin-bottom: 0.8cqw;
+  margin-bottom: 0.6cqw;
   /* Quitamos el fondo y borde para que se integre con los brochazos de la imagen */
   display: inline-block;
   line-height: 1;
@@ -201,7 +201,7 @@ const formatPrice = (price) => {
 .items-container {
   display: flex;
   flex-direction: column;
-  gap: 0.3cqw; /* Menos espacio entre ítems (ayuda a los que no tienen subtítulo) */
+  gap: 0.2cqw; /* Menos espacio entre ítems */
 }
 
 .menu-item-row {
@@ -219,7 +219,7 @@ const formatPrice = (price) => {
 }
 
 .item-name {
-  font-size: 1.3cqw; /* Volvemos a achicar un poco el producto */
+  font-size: 1.25cqw; /* Achicamos mínimamente */
   font-weight: bold;
   letter-spacing: 0.05cqw;
   line-height: 1.1;
@@ -227,7 +227,7 @@ const formatPrice = (price) => {
 }
 
 .item-desc {
-  font-size: 1.12cqw; /* Agrandamos el subtítulo para legibilidad */
+  font-size: 1.12cqw; /* Achicamos mínimamente */
   color: #d1d5db; /* gray-300 */
   line-height: 1.1;
   margin-top: 0.2cqw;
@@ -244,7 +244,7 @@ const formatPrice = (price) => {
 }
 
 .item-price {
-  font-size: 1.5cqw;
+  font-size: 1.5cqw; /* Achicamos mínimamente */
   font-weight: bold;
   color: #ff4500;
   margin-left: 0.5cqw;
